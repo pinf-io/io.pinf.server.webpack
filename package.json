@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "bash.origin": "0.1.x",
+    "org.pinf.genesis.lib": "0.1.x"
+  },
+  "config": {
+    "io.pinf.proxy/0": {
+      "port": 8082,
+      "host": "127.0.0.1"
+    },
+    "pio.pinf.io/0": {
+      "runtime": "default-nodejs-server"
+    },
+    "org.pinf.genesis.lib/0": {
+      "api": {
+        "consumes": {
+          "config": "org.pinf.genesis.lib/0/config"
+        }
+      }
+  }
+}
