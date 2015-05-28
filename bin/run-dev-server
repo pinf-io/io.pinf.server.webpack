@@ -9,7 +9,7 @@ function init {
 
 	pushd "$__BO_DIR__/../example" > /dev/null
 
-		BO_run_node "$__BO_DIR__/run-dev-server.js"
+		BO_run_node "$__BO_DIR__/../server.js"
 
 	popd > /dev/null
 

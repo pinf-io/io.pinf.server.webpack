@@ -33,6 +33,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				var outputPath = PATH.join(location, config.targetPath);
 
 				var compilerConfig = {
+					context: location,
 					module: {
 						loaders: [],
 					},
@@ -48,7 +49,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				    },
 					entry: {
 						app: [
-							PATH.join(location, config.sourcePath, 'main.js')
+							config.sourcePath + '/main.js'
 						]
 					},
 					output: {
@@ -79,7 +80,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 					    };
 
 					    compilerConfig.resolve.extensions.push('.jsx');
-					    compilerConfig.entry.app.push(PATH.join(location, config.sourcePath, 'index.jsx'));
+					    compilerConfig.entry.app.push(config.sourcePath + '/index.jsx');
 
 					} else {
 						throw new Error("Ecosystem '" + ecosystem + "' not supported!");

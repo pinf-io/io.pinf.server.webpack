@@ -1,5 +1,6 @@
 {
   "name": "io.pinf.server.webpack",
+  "main": "server.js",
   "dependencies": {
     "bash.origin": "0.1.x",
     "express": "^4.12.4",
