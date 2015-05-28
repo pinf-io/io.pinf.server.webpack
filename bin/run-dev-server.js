@@ -12,8 +12,14 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 	function setupPackSet (app, packSetName, locator, callback) {
 
+		var location = locator.location;
+
+		if (!/^\//.test(location)) {
+			location = PATH.dirname(require.resolve(location + "/package.json"));
+		}
+
 		function loadPackConfig (callback) {
-			return API.PACKAGE.fromFile(PATH.join(locator.location, "package.json"), function (err, descriptor) {
+			return API.PACKAGE.fromFile(PATH.join(location, "package.json"), function (err, descriptor) {
 				if (err) return callback(err);
 				return callback(null, descriptor.configForLocator(API.LOCATOR.fromConfigId("io.pinf.server.webpack/0")));
 			});
@@ -24,7 +30,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 			function configurePack (subName, config) {
 
-				var outputPath = PATH.join(locator.location, config.targetPath);
+				var outputPath = PATH.join(location, config.targetPath);
 
 				var compilerConfig = {
 					module: {
@@ -42,7 +48,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				    },
 					entry: {
 						app: [
-							PATH.join(locator.location, config.sourcePath, 'main.js')
+							PATH.join(location, config.sourcePath, 'main.js')
 						]
 					},
 					output: {
@@ -61,7 +67,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 								PATH.dirname(require.resolve('react-hot-loader/package.json')),
 								PATH.dirname(require.resolve('jsx-loader/package.json')) + '?insertPragma=React.DOM&harmony'
 							],
-							include: PATH.join(locator.location, config.sourcePath)
+							include: PATH.join(location, config.sourcePath)
 						});
 
 						compilerConfig.plugins.unshift(new WEBPACK.HotModuleReplacementPlugin());
@@ -73,14 +79,14 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 					    };
 
 					    compilerConfig.resolve.extensions.push('.jsx');
-					    compilerConfig.entry.app.push(PATH.join(locator.location, config.sourcePath, 'index.jsx'));
+					    compilerConfig.entry.app.push(PATH.join(location, config.sourcePath, 'index.jsx'));
 
 					} else {
 						throw new Error("Ecosystem '" + ecosystem + "' not supported!");
 					}
 				});
 
-				API.console.verbose("Setup compiler and route '" + ("/" + packSetName + "/" + subName) + "' for pack from: " + locator.location);
+				API.console.verbose("Setup compiler and route '" + ("/" + packSetName + "/" + subName) + "' for pack from: " + location);
 
 				API.console.debug("compilerConfig", compilerConfig);
 
@@ -124,7 +130,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				var path = req.params[0];
 				if (path === "/") path = "/index.html";
 				return SEND(req, path, {
-					root: PATH.join(locator.location, packSetConfig.wwwPath)
+					root: PATH.join(location, packSetConfig.wwwPath)
 				}).on("error", next).pipe(res);
 			});
 
