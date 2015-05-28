@@ -126,12 +126,18 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				configurePack(name, packSetConfig.packs[name]);
 			});
 
-			app.get(new RegExp("^\\/" + packSetName + "(\\/.*)$"), function (req, res, next) {
-				var path = req.params[0];
-				if (path === "/") path = "/index.html";
-				return SEND(req, path, {
-					root: PATH.join(location, packSetConfig.wwwPath)
-				}).on("error", next).pipe(res);
+			var staticRoutes = Object.keys(packSetConfig.static);
+			staticRoutes.sort(function(a, b) {
+				return b.length - a.length; // ASC -> a - b; DESC -> b - a
+			});
+			staticRoutes.forEach(function (route) {
+				app.get(new RegExp("^\\/" + packSetName + route.replace(/\/$/, "").replace(/\//g, "\\/") + "(\\/.*)$"), function (req, res, next) {
+					var path = req.params[0];
+					if (path === "/") path = "/index.html";
+					return SEND(req, path, {
+						root: PATH.join(location, packSetConfig.static[route])
+					}).on("error", next).pipe(res);
+				});
 			});
 
 			return callback(null);
