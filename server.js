@@ -18,14 +18,14 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 			location = PATH.dirname(require.resolve(location + "/package.json"));
 		}
 
-		function loadPackConfig (callback) {
+		function loadPackageConfig (callback) {
 			return API.PACKAGE.fromFile(PATH.join(location, "package.json"), function (err, descriptor) {
 				if (err) return callback(err);
 				return callback(null, descriptor.configForLocator(API.LOCATOR.fromConfigId("io.pinf.server.webpack/0")));
 			});
 		}
 
-		return loadPackConfig(function (err, packSetConfig) {
+		return loadPackageConfig(function (err, packSetConfig) {
 			if (err) return callback(err);
 
 			function configurePack (subName, config) {
@@ -49,12 +49,13 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				    },
 					entry: {
 						app: [
+							PATH.dirname(require.resolve("webpack/package.json")) + '/hot/only-dev-server',
 							config.sourcePath + '/main.js'
 						]
 					},
 					output: {
 						path: outputPath,
-						publicPath: "/" + packSetName + "/" + subName + "/webpack/",
+						publicPath: "/" + packSetName + "/" + subName + "/",
 						filename: 'bundle.js'
 					}
 				};
