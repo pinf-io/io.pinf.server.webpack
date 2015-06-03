@@ -35,9 +35,28 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				var compilerConfig = {
 					debug: true,
 					bail: true,
+					resolveLoader: {
+						root: PATH.join(__dirname, "node_modules")
+					},					
 					context: location,
 					module: {
-						loaders: [],
+						loaders: [
+							{
+								test: /\.css$/,
+								loader: "style-loader!css-loader",
+								include: PATH.join(location, config.sourcePath)
+							},
+							{
+								test: /\.png$/,
+								loader: "url-loader?limit=100000",
+								include: PATH.join(location, config.sourcePath)
+							},
+							{
+								test: /\.jpg$/,
+								loader: "file-loader",
+								include: PATH.join(location, config.sourcePath)
+							}
+						]
 					},
 					plugins: [
 						new WEBPACK.NoErrorsPlugin()
@@ -46,13 +65,15 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				    resolve: {
 				        extensions: [
 				        	'',
-				        	'.js'
+				        	'.js',
+				        	'.css'
 				        ]
 				    },
 					entry: {
 						app: [
 							PATH.dirname(require.resolve("webpack/package.json")) + '/hot/only-dev-server',
-							config.sourcePath + '/main.js'
+							config.sourcePath + '/index.js',
+							config.sourcePath + '/index.css'
 						]
 					},
 					output: {
