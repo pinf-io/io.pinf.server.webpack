@@ -33,6 +33,8 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				var outputPath = PATH.join(location, config.targetPath);
 
 				var compilerConfig = {
+					debug: true,
+					bail: true,
 					context: location,
 					module: {
 						loaders: [],
@@ -100,6 +102,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				}, function(err, stats) {
 					if (err) {
 						console.error("Error compiling bundle!", err.stack);
+						return;
 					}
 
 // TODO: Notify client of change!
