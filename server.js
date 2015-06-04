@@ -100,7 +100,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 						compilerConfig.externals = {
 					        //don't bundle the 'react' npm package with our bundle.js
 					        //but get it from a global 'React' variable
-					        'react': 'React'
+//					        'react': 'React'
 					    };
 
 					    compilerConfig.resolve.extensions.push('.jsx');
