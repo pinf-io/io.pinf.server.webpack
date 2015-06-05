@@ -2,11 +2,15 @@
   "name": "io.pinf.server.webpack",
   "main": "server.js",
   "dependencies": {
+    "JSONPath": "s3u/JSONPath#97dea483f2",
     "bash.origin": "0.1.x",
     "css-loader": "^0.14.4",
+    "deepmerge": "^0.2.10",
     "express": "^4.12.4",
     "file-loader": "^0.8.4",
     "jsx-loader": "^0.13.2",
+    "less": "^2.5.1",
+    "less-loader": "^2.2.0",
     "node-libs-browser": "^0.5.2",
     "org.pinf.genesis.lib": "0.1.x",
     "org.pinf.lib": "0.1.x",
@@ -32,6 +36,7 @@
           "config": "org.pinf.genesis.lib/0/config",
           "PACKAGE": "org.pinf.lib/lib/package",
           "LOCATOR": "org.pinf.lib/lib/locator",
+          "DEEPMERGE": "deepmerge",
           "Q": "q"
         }
       }

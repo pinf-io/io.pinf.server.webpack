@@ -5,6 +5,7 @@ const SEND = require("send");
 const HTTP = require("http");
 const WEBPACK = require("webpack");
 const WAITFOR = require("waitfor");
+const JSONPATH = require("JSONPath");
 
 
 require('org.pinf.genesis.lib').forModule(require, module, function (API, exports) {
@@ -42,16 +43,35 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 					module: {
 						loaders: [
 							{
+								_alias: "css",
 								test: /\.css$/,
-								loader: "style-loader!css-loader",
+								loaders: [
+									"style-loader",
+									"css-loader"
+								],
 								include: PATH.join(location, config.sourcePath)
 							},
 							{
+								_alias: "less",
+								test: /\.less$/,
+								loaders: [
+									"style",
+									"css",
+									"less"
+								],
+								include: PATH.join(location, config.sourcePath)
+							},
+							{
+								_alias: "png",
 								test: /\.png$/,
-								loader: "url-loader?limit=100000",
+								loader: "url-loader",
+								query: {
+									limit: 100000
+								},
 								include: PATH.join(location, config.sourcePath)
 							},
 							{
+								_alias: "jpg",
 								test: /\.jpg$/,
 								loader: "file-loader",
 								include: PATH.join(location, config.sourcePath)
@@ -63,6 +83,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 					],
 				    externals: {},
 				    resolve: {
+				    	fallback: "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-mockup/skin",
 				        extensions: [
 				        	'',
 				        	'.js',
@@ -87,6 +108,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 					if (ecosystem === "react") {
 
 						compilerConfig.module.loaders.push({
+							_alias: "jsx",
 							test: /\.jsx?$/,
 							loaders: [
 								PATH.dirname(require.resolve('react-hot-loader/package.json')),
@@ -110,6 +132,23 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 						throw new Error("Ecosystem '" + ecosystem + "' not supported!");
 					}
 				});
+
+				if (config.compilerConfig) {
+					config.compilerConfig.forEach(function (overlay) {
+						var match = JSONPATH({}, compilerConfig, overlay[0]);
+						if (
+							match &&
+							match.length === 1
+						) {
+							var merged = API.DEEPMERGE(match[0], overlay[1]);
+							for (var name in merged) {
+								match[0][name] = merged[name];
+							}
+console.log("match[0]", match[0]);
+process.exit(1);
+						}
+					});
+				}
 
 				API.console.verbose("Setup compiler and route '" + ("/" + packSetName + "/" + subName) + "' for pack from: " + location);
 
