@@ -10,7 +10,6 @@ const JSONPATH = require("JSONPath");
 
 require('org.pinf.genesis.lib').forModule(require, module, function (API, exports) {
 
-
 	function setupPackSet (app, packSetName, locator, callback) {
 
 		var location = locator.location;
@@ -144,15 +143,13 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 							for (var name in merged) {
 								match[0][name] = merged[name];
 							}
-console.log("match[0]", match[0]);
-process.exit(1);
 						}
 					});
 				}
 
 				API.console.verbose("Setup compiler and route '" + ("/" + packSetName + "/" + subName) + "' for pack from: " + location);
 
-				API.console.debug("compilerConfig", compilerConfig);
+				API.console.verbose("compilerConfig", compilerConfig);
 
 				var compiler = WEBPACK(compilerConfig);
 
@@ -214,6 +211,30 @@ process.exit(1);
 	return API.Q.denodeify(function (callback) {
 
 		var app = EXPRESS();
+
+		app.use(function (req, res, next) {
+
+			var origin = null;
+	        if (req.headers.origin) {
+	            origin = req.headers.origin;
+	        } else
+	        if (req.headers.host) {
+	            origin = [
+	                (API.config.port === 443) ? "https" : "http",
+	                "://",
+	                req.headers.host
+	            ].join("");
+	        }
+	        res.setHeader("Access-Control-Allow-Methods", "GET");
+	        res.setHeader("Access-Control-Allow-Credentials", "true");
+	        res.setHeader("Access-Control-Allow-Origin", origin);
+	        res.setHeader("Access-Control-Allow-Headers", "Content-Type, Cookie");
+	        if (req.method === "OPTIONS") {
+	            return res.end();
+	        }
+
+	        return next();
+		});
 
 		var waitfor = WAITFOR.parallel(function (err) {
 
