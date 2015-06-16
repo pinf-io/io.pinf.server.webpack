@@ -47,8 +47,8 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 								loaders: [
 									"style-loader",
 									"css-loader"
-								],
-								include: PATH.join(location, config.sourcePath)
+								]
+//								include: PATH.join(location, config.sourcePath)
 							},
 							{
 								_alias: "less",
@@ -57,8 +57,8 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 									"style",
 									"css",
 									"less"
-								],
-								include: PATH.join(location, config.sourcePath)
+								]
+//								include: PATH.join(location, config.sourcePath)
 							},
 							{
 								_alias: "png",
@@ -66,18 +66,24 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 								loader: "url-loader",
 								query: {
 									limit: 100000
-								},
-								include: PATH.join(location, config.sourcePath)
+								}
+//								include: PATH.join(location, config.sourcePath)
 							},
 							{
 								_alias: "jpg",
 								test: /\.jpg$/,
-								loader: "file-loader",
-								include: PATH.join(location, config.sourcePath)
+								loader: "file-loader"
+//								include: PATH.join(location, config.sourcePath)
 							}
 						]
 					},
 					plugins: [
+						new WEBPACK.optimize.DedupePlugin(),
+						new WEBPACK.DefinePlugin({
+							"process.env": {
+								NODE_ENV: JSON.stringify("production")
+							}
+						}),
 						new WEBPACK.NoErrorsPlugin()
 					],
 				    externals: {},
@@ -112,8 +118,8 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 							loaders: [
 								PATH.dirname(require.resolve('react-hot-loader/package.json')),
 								PATH.dirname(require.resolve('jsx-loader/package.json')) + '?insertPragma=React.DOM&harmony'
-							],
-							include: PATH.join(location, config.sourcePath)
+							]
+							//include: PATH.join(location, config.sourcePath)
 						});
 
 						compilerConfig.plugins.unshift(new WEBPACK.HotModuleReplacementPlugin());
@@ -149,7 +155,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 				API.console.verbose("Setup compiler and route '" + ("/" + packSetName + "/" + subName) + "' for pack from: " + location);
 
-				API.console.verbose("compilerConfig", compilerConfig);
+				API.console.verbose("compilerConfig", JSON.stringify(compilerConfig, null, 4));
 
 				var compiler = WEBPACK(compilerConfig);
 
