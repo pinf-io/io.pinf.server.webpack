@@ -7,7 +7,7 @@ function init {
 	local __BO_DIR__="$___TMP___"
 
 
-	pushd "$__BO_DIR__/../example" > /dev/null
+	pushd "$__BO_DIR__/.." > /dev/null
 
 		BO_run_node "$__BO_DIR__/../server.js"
 

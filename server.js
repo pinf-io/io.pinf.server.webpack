@@ -93,7 +93,8 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				        	'',
 				        	'.js',
 				        	'.css'
-				        ]
+				        ],
+				        alias: {}
 				    },
 					entry: {
 						app: [
@@ -200,7 +201,12 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 					return b.length - a.length; // ASC -> a - b; DESC -> b - a
 				});
 				staticRoutes.forEach(function (route) {
-					app.get(new RegExp("^\\/" + packSetName + route.replace(/\/$/, "").replace(/\//g, "\\/") + "(\\/.*)$"), function (req, res, next) {
+
+					var routeString = ("^\\/" + packSetName + route.replace(/\/$/, "").replace(/\//g, "\\/") + "(\\/.*)$");
+
+					API.console.verbose("Mount route:", routeString);
+
+					app.get(new RegExp(routeString), function (req, res, next) {
 						var path = req.params[0];
 						if (path === "/") path = "/index.html";
 						return SEND(req, path, {
