@@ -117,7 +117,8 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 							_alias: "jsx",
 							test: /\.jsx?$/,
 							loaders: [
-								PATH.dirname(require.resolve('react-hot-loader/package.json')),
+// TODO: Enable for hot reloading.
+//								PATH.dirname(require.resolve('react-hot-loader/package.json')),
 								PATH.dirname(require.resolve('jsx-loader/package.json')) + '?insertPragma=React.DOM&harmony'
 							]
 							//include: PATH.join(location, config.sourcePath)
@@ -132,6 +133,11 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 					    };
 
 					    compilerConfig.resolve.extensions.push('.jsx');
+
+// TODO: Enable for hot reloading.
+//						compilerConfig.resolve.alias['react'] = 'react/dist/react-with-addons.js';
+//						compilerConfig.resolve.alias['react/addons/lib'] = 'react/../lib';
+
 					    compilerConfig.entry.app.push(config.sourcePath + '/index.jsx');
 
 					} else {
