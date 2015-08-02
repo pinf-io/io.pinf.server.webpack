@@ -88,6 +88,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 					],
 				    externals: {},
 				    resolve: {
+// TODO: Fix this.				    	
 				    	fallback: "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-mockup/skin",
 				        extensions: [
 				        	'',
