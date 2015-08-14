@@ -1,5 +1,6 @@
 
 const PATH = require("path");
+const FS = require("fs");
 const EXPRESS = require("express");
 const SEND = require("send");
 const HTTP = require("http");
@@ -99,7 +100,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				    },
 					entry: {
 						app: [
-							PATH.dirname(require.resolve("webpack/package.json")) + '/hot/only-dev-server',
+//							PATH.dirname(require.resolve("webpack/package.json")) + '/hot/only-dev-server',
 							config.sourcePath + '/index.js',
 							config.sourcePath + '/index.css'
 						]
@@ -125,12 +126,13 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 							//include: PATH.join(location, config.sourcePath)
 						});
 
-						compilerConfig.plugins.unshift(new WEBPACK.HotModuleReplacementPlugin());
+//						compilerConfig.plugins.unshift(new WEBPACK.HotModuleReplacementPlugin());
 
 						compilerConfig.externals = {
 					        //don't bundle the 'react' npm package with our bundle.js
 					        //but get it from a global 'React' variable
-//					        'react': 'React'
+					        'react': 'React'
+//					        '$': '$'
 					    };
 
 					    compilerConfig.resolve.extensions.push('.jsx');
@@ -192,9 +194,20 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 				app.get(new RegExp("^\\/" + packSetName + "\\/" + subName + "\\/(.*)$"), function (req, res, next) {
 					var path = req.params[0];
-					return SEND(req, path, {
-						root: outputPath
-					}).on("error", next).pipe(res);
+
+					// TODO: Implement `defs` plugin.
+					var data = FS.readFileSync(PATH.join(outputPath, path), "utf8");
+
+					data = data.replace(/const /g, "var ");
+
+					res.writeHead(200, {
+						"Content-Type": "application/javascript"
+					});
+					return res.end(data);
+
+//					return SEND(req, path, {
+//						root: outputPath
+//					}).on("error", next).pipe(res);
 				});
 			}
 
